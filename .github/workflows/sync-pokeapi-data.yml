@@ -1,0 +1,30 @@
+name: Sync PokeAPI api-data
+
+on:
+  schedule:
+    # Weekly on Sundays
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest PokeAPI api-data
+        run: |
+          rm -rf temp-api-data
+          git clone --depth 1 https://github.com/PokeAPI/api-data.git temp-api-data
+          rm -rf resources/pokeapi-data/v2
+          mkdir -p resources/pokeapi-data
+          cp -R temp-api-data/data/v2 resources/pokeapi-data/v2
+          rm -rf temp-api-data
+
+      - name: Commit updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add resources/pokeapi-data/v2
+          git diff --staged --quiet || git commit -m "chore: sync PokeAPI api-data"
+          git push
