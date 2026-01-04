@@ -27,6 +27,8 @@ Model Context Protocol (MCP) server that surfaces:
 
 ## Data source (PokeAPI api-data)
 
+The full PokeAPI `api-data` dataset is large, so (like `node_modules`) it is intentionally NOT tracked in git.
+
 This server expects the `api-data/data/v2` tree copied to:
 
 - `resources/pokeapi-data/v2/...`
@@ -36,10 +38,20 @@ Examples:
 - `resources/pokeapi-data/v2/pokemon/index.json`
 - `resources/pokeapi-data/v2/pokemon/<id>/index.json`
 
-Sync options:
+### Sync (recommended)
 
-- GitHub Actions: see [.github/workflows/sync-pokeapi-data.yml](.github/workflows/sync-pokeapi-data.yml)
-- Local manual sync: run `./scripts/sync-pokeapi-data.ps1`
+Prereq: you need `git` installed.
+
+```bash
+npm run sync
+```
+
+This downloads `PokeAPI/api-data` and copies `data/v2` into `resources/pokeapi-data/v2`.
+
+### Sync (direct scripts)
+
+- Windows (PowerShell): `./scripts/sync-pokeapi-data.ps1`
+- macOS/Linux (bash): `./scripts/sync-pokeapi-data.sh`
 
 ## Run locally (stdio MCP)
 

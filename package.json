@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "build": "tsc -p .",
+    "sync": "node ./scripts/sync-pokeapi-data.mjs",
     "start": "node ./build/index.js",
     "start:http": "node ./build/index.js --http-port 4027",
     "dev": "ts-node ./src/index.ts",

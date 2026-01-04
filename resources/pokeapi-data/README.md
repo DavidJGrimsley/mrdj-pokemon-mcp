@@ -2,6 +2,8 @@
 
 This folder is intended to contain a synced copy of `PokeAPI/api-data`'s `data/v2` tree.
 
+Note: the actual data under `resources/pokeapi-data/v2` is intentionally NOT tracked in git.
+
 Expected layout:
 
 - `resources/pokeapi-data/v2/pokemon/index.json`
@@ -9,8 +11,7 @@ Expected layout:
 
 Sync options:
 
-- GitHub Actions: see `.github/workflows/sync-pokeapi-data.yml`
-- Manual:
-  1. `git clone https://github.com/PokeAPI/api-data.git temp-api-data`
-  2. Copy `temp-api-data/data/v2` -> `resources/pokeapi-data/v2`
-  3. Delete `temp-api-data`
+- Recommended: `npm run sync`
+- Direct scripts:
+  - Windows: `./scripts/sync-pokeapi-data.ps1`
+  - macOS/Linux: `./scripts/sync-pokeapi-data.sh`

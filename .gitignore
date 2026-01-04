@@ -21,4 +21,11 @@ coverage/
 # Local artifacts
 claudeLogs/
 
+# Local PokeAPI data (large; keep out of git)
+resources/pokeapi-data/**
+!resources/pokeapi-data/README.md
+
+# Local cache from live fallbacks
+resources/pokeapi-cache/
+
 temp/
