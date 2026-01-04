@@ -12,4 +12,4 @@ jobs:
       - name: Info
         run: |
           echo "PokeAPI data is intentionally excluded from git." 
-          echo "Run 'npm run sync' locally (or on your VPS) to download it." 
+          echo "Run 'npm run sync' locally (or on your VPS) to download it."
