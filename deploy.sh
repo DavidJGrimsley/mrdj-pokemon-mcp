@@ -17,7 +17,10 @@ npm run build
 
 # Create deployment package
 echo "Creating deployment package..."
-tar -czf deploy.tar.gz build/ guides/ resources/ package.json package-lock.json
+tar \
+  --exclude='resources/pokeapi-data/v2' \
+  --exclude='resources/pokeapi-cache' \
+  -czf deploy.tar.gz build/ guides/ scripts/ resources/ package.json package-lock.json
 
 # Copy to VPS
 echo "Copying files to VPS..."
@@ -38,6 +41,14 @@ ssh ${VPS_USER}@${VPS_HOST} << EOF
   
   # Install dependencies (production only)
   npm ci --production
+
+  # Sync PokeAPI dataset locally on the VPS if missing
+  if [ ! -f resources/pokeapi-data/v2/pokemon/index.json ]; then
+    echo "PokeAPI data missing on VPS; running npm run sync..."
+    npm run sync
+  else
+    echo "PokeAPI data already present; skipping sync."
+  fi
   
   # Restart with PM2
   if pm2 describe ${APP_NAME} > /dev/null 2>&1; then

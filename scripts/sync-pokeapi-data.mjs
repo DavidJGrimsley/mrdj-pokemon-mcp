@@ -27,8 +27,8 @@ if (platform === 'win32') {
     stdio: 'inherit',
   });
 
-  if (tryPowershell.status === 0) {
-    process.exit(0);
+  if (!tryPowershell.error) {
+    process.exit(tryPowershell.status ?? 1);
   }
 
   run('pwsh', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', scriptPath, '-Destination', destination]);

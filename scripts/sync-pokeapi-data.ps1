@@ -19,7 +19,16 @@ if (Test-Path $targetV2) {
 }
 
 New-Item -ItemType Directory -Force $Destination | Out-Null
-Copy-Item -Recurse -Force (Join-Path $temp "data/v2") $targetV2
+$sourceV2 = Join-Path $temp "data/api/v2"
+if (-not (Test-Path $sourceV2)) {
+  $sourceV2 = Join-Path $temp "data/v2"
+}
+
+if (-not (Test-Path $sourceV2)) {
+  throw "Could not find PokeAPI v2 data at 'data/api/v2' (or legacy 'data/v2') inside $temp"
+}
+
+Copy-Item -Recurse -Force $sourceV2 $targetV2
 
 Remove-Item -Recurse -Force $temp
 

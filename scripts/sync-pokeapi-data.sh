@@ -22,6 +22,16 @@ TARGET_V2="${DESTINATION}/v2"
 rm -rf "${TARGET_V2}"
 mkdir -p "${DESTINATION}"
 
-cp -R "${TMP_DIR}/data/v2" "${TARGET_V2}"
+SOURCE_V2="${TMP_DIR}/data/api/v2"
+if [ ! -d "${SOURCE_V2}" ]; then
+  SOURCE_V2="${TMP_DIR}/data/v2"
+fi
+
+if [ ! -d "${SOURCE_V2}" ]; then
+  echo "Error: Could not find PokeAPI v2 data at 'data/api/v2' (or legacy 'data/v2')" >&2
+  exit 1
+fi
+
+cp -R "${SOURCE_V2}" "${TARGET_V2}"
 
 echo "Done. Expected index: ${TARGET_V2}/pokemon/index.json"

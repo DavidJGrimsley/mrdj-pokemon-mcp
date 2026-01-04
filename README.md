@@ -73,6 +73,8 @@ curl http://localhost:4027/health
 - Internal server runs on `localhost:4027`
 - Public endpoints are path-prefixed under `/mcp/mrdj-pokemon-mcp/*`
 
+On the VPS, the PokeAPI dataset must be present at `resources/pokeapi-data/v2`. The included [deploy.sh](deploy.sh) will run `npm run sync` automatically if the dataset is missing.
+
 Use the Plesk-friendly reverse proxy snippet in [nginx.conf](nginx.conf).
 
 ## Attribution
