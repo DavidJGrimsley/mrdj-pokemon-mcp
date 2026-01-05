@@ -15,3 +15,13 @@ Sync options:
 - Direct scripts:
   - Windows: `./scripts/sync-pokeapi-data.ps1`
   - macOS/Linux: `./scripts/sync-pokeapi-data.sh`
+
+## Optional: scheduled refresh (VPS)
+
+If you run this server long-term, consider refreshing the dataset weekly and restarting the PM2 process.
+
+Example cron entry:
+
+```cron
+0 3 * * 1 cd /path/to/mrdj-pokemon-mcp && npm run sync && pm2 restart mrdj-pokemon-mcp
+```

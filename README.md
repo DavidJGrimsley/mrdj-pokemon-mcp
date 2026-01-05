@@ -70,12 +70,30 @@ curl http://localhost:4027/health
 
 ## VPS deployment (Plesk/nginx + PM2)
 
-- Internal server runs on `localhost:4027`
+- Internal server runs on `127.0.0.1:4027`
 - Public endpoints are path-prefixed under `/mcp/mrdj-pokemon-mcp/*`
 
 On the VPS, the PokeAPI dataset must be present at `resources/pokeapi-data/v2`. The included [deploy.sh](deploy.sh) will run `npm run sync` automatically if the dataset is missing.
 
 Use the Plesk-friendly reverse proxy snippet in [nginx.conf](nginx.conf).
+
+### Weekly dataset refresh (cron)
+
+The PokeAPI dataset changes over time. This repo does not schedule refreshes automatically; schedule `npm run sync` on the VPS.
+
+Example (runs Mondays at 03:00, then restarts PM2):
+
+```cron
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+0 3 * * 1 cd /home/deployer/mrdj-pokemon-mcp && npm run sync && pm2 restart mrdj-pokemon-mcp >> /home/deployer/mrdj-pokemon-mcp/sync.log 2>&1
+```
+
+Notes:
+
+- Update the path to match where you cloned the repo.
+- If your VPS uses a Node version manager (e.g. nodenv/nvm), you may need to set `PATH` so `node`/`npm` are available to cron.
 
 ## Attribution
 
