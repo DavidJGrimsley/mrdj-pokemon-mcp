@@ -68,4 +68,4 @@ EOF
 rm deploy.tar.gz
 
 echo "=== Deployment complete ==="
-echo "Health check: https://DavidJGrimsley.com/mcp/mrdj-pokemon-mcp/health"
+echo "Health check: https://DavidJGrimsley.com/public-facing/mcp/mrdj-pokemon-mcp/health"

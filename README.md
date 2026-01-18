@@ -2,7 +2,7 @@
 
 This runs on my VPS and can be used in any MCP client (VS Code, etc.) at:
 
-- https://davidjgrimsley.com/mcp/mrdj-pokemon-mcp/mcp
+- https://davidjgrimsley.com/public-facing/mcp/mrdj-pokemon-mcp/mcp
 
 More info page:
 
@@ -71,7 +71,7 @@ curl http://localhost:4027/health
 ## VPS deployment (Plesk/nginx + PM2)
 
 - Internal server runs on `127.0.0.1:4027`
-- Public endpoints are path-prefixed under `/mcp/mrdj-pokemon-mcp/*`
+- Public endpoints are path-prefixed under `/public-facing/mcp/mrdj-pokemon-mcp/*`
 
 On the VPS, the PokeAPI dataset must be present at `resources/pokeapi-data/v2`. The included [deploy.sh](deploy.sh) will run `npm run sync` automatically if the dataset is missing.
 

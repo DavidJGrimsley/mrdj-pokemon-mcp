@@ -57,15 +57,16 @@ type PortfolioEndpoint = {
 };
 
 const PORTFOLIO_SERVER_ID = "mrdj-pokemon-mcp";
-const PORTFOLIO_MCP_ENDPOINT_URL = "https://davidjgrimsley.com/mcp/mrdj-pokemon-mcp/mcp";
+const PUBLIC_MCP_BASE_URL = "https://davidjgrimsley.com/public-facing/mcp";
+const PUBLIC_MCP_SERVER_BASE_URL = `${PUBLIC_MCP_BASE_URL}/${PORTFOLIO_SERVER_ID}`;
+const PUBLIC_MCP_SERVER_PATH = `/public-facing/mcp/${PORTFOLIO_SERVER_ID}`;
+const PORTFOLIO_MCP_ENDPOINT_URL = `${PUBLIC_MCP_SERVER_BASE_URL}/mcp`;
+const PORTFOLIO_SSE_MESSAGES_URL = `${PUBLIC_MCP_SERVER_BASE_URL}/messages`;
+const PORTFOLIO_HEALTH_URL = `${PUBLIC_MCP_SERVER_BASE_URL}/health`;
+const PORTFOLIO_PORTFOLIO_URL = `${PUBLIC_MCP_SERVER_BASE_URL}/portfolio.json`;
+const PORTFOLIO_INFO_PAGE_URL = `https://davidjgrimsley.com/mcp/${PORTFOLIO_SERVER_ID}`;
 const PORTFOLIO_GITHUB_REPO_URL = "https://github.com/DavidJGrimsley/mrdj-pokemon-mcp";
-
-// Keep these arrays in the exact order expected by the portfolio UI.
-const PORTFOLIO_RESOURCES: PortfolioResource[] = [
-  { id: "index", title: "Index", fileName: "index.md", description: "Entry point for all strategy guides." },
-  { id: "general", title: "General", fileName: "general.md", description: "General Pokemon tips and best practices." },
-  { id: "tera-raid", title: "Tera Raids", fileName: "tera-raid.md", description: "Strategies for tough Tera Raid battles." }
-];
+const SERVER_STARTED_AT = new Date().toISOString();
 
 const PORTFOLIO_TOOLS: PortfolioTool[] = [
   {
@@ -138,16 +139,25 @@ const PORTFOLIO_ENDPOINTS: PortfolioEndpoint[] = [
     id: "mcp-endpoint",
     title: "MCP Endpoint",
     method: "GET",
-    url: "https://davidjgrimsley.com/mcp/mrdj-pokemon-mcp/mcp",
+    url: PORTFOLIO_MCP_ENDPOINT_URL,
     description: "Primary MCP endpoint (Streamable HTTP + legacy SSE fallback).",
     transport: "streamable-http",
+    contentType: "application/json"
+  },
+  {
+    id: "sse-messages",
+    title: "SSE Messages (POST)",
+    method: "POST",
+    url: PORTFOLIO_SSE_MESSAGES_URL,
+    description: "SSE transport message endpoint (used by legacy SSE MCP clients).",
+    transport: "sse",
     contentType: "application/json"
   },
   {
     id: "portfolio-json",
     title: "Portfolio Metadata (portfolio.json)",
     method: "GET",
-    url: "https://davidjgrimsley.com/mcp/mrdj-pokemon-mcp/portfolio.json",
+    url: PORTFOLIO_PORTFOLIO_URL,
     description: "Metadata used by the portfolio UI (resources/tools/prompts).",
     contentType: "application/json"
   },
@@ -155,7 +165,7 @@ const PORTFOLIO_ENDPOINTS: PortfolioEndpoint[] = [
     id: "health",
     title: "Health Check",
     method: "GET",
-    url: "https://davidjgrimsley.com/mcp/mrdj-pokemon-mcp/health",
+    url: PORTFOLIO_HEALTH_URL,
     description: "Server health status endpoint.",
     contentType: "application/json"
   },
@@ -163,14 +173,14 @@ const PORTFOLIO_ENDPOINTS: PortfolioEndpoint[] = [
     id: "info-page",
     title: "Info Page",
     method: "GET",
-    url: "https://davidjgrimsley.com/mcp/mrdj-pokemon-mcp",
+    url: PORTFOLIO_INFO_PAGE_URL,
     description: "Human-readable MCP server overview page."
   },
   {
     id: "github-repo",
     title: "GitHub Repository",
     method: "GET",
-    url: "https://github.com/DavidJGrimsley/mrdj-pokemon-mcp",
+    url: PORTFOLIO_GITHUB_REPO_URL,
     description: "Source code for the MCP server."
   }
 ];
@@ -1146,7 +1156,7 @@ async function main() {
     }));
     
     // External path clients will POST to (through nginx)
-    const sseMessagesPathExternal = "/mcp/mrdj-pokemon-mcp/messages";
+    const sseMessagesPathExternal = `${PUBLIC_MCP_SERVER_PATH}/messages`;
     // Internal path nginx proxies to
     const sseMessagesPathInternal = "/mcp/messages";
     
@@ -1191,10 +1201,16 @@ async function main() {
             mcpEndpointUrl: PORTFOLIO_MCP_ENDPOINT_URL,
             githubRepoUrl: PORTFOLIO_GITHUB_REPO_URL
           },
-          resources: PORTFOLIO_RESOURCES,
+          resources: guides.map((guide) => ({
+            id: guide.id,
+            title: guide.title,
+            fileName: guide.fileName,
+            description: guide.description
+          })),
           tools: PORTFOLIO_TOOLS,
           prompts: PORTFOLIO_PROMPTS,
-          endpoints: PORTFOLIO_ENDPOINTS
+          endpoints: PORTFOLIO_ENDPOINTS,
+          updatedAt: SERVER_STARTED_AT
         };
 
         // Compute ETag for conditional requests
